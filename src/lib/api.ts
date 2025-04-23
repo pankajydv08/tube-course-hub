@@ -106,12 +106,31 @@ export const authApi = {
   login: (credentials: { email: string; password: string }) => 
     apiRequest("/auth/login", "POST", credentials, false),
   
-  register: (userData: { 
+  register: async (userData: { 
     name: string; 
     email: string; 
     password: string;
     role: "student" | "instructor"
-  }) => apiRequest("/auth/register", "POST", userData, false),
+  }) => {
+    // Add some debugging logs
+    console.log("Sending registration data:", userData);
+    
+    try {
+      const response = await apiRequest("/auth/register", "POST", userData, false);
+      console.log("Registration response received:", response);
+      
+      // Check if response has the expected format
+      if (!response.user || !response.token) {
+        console.error("Invalid response format:", response);
+        throw new Error("Invalid server response format");
+      }
+      
+      return response;
+    } catch (error) {
+      console.error("Registration API error:", error);
+      throw error;
+    }
+  },
   
   logout: () => {
     localStorage.removeItem("token");
@@ -123,6 +142,10 @@ export const authApi = {
   
   // Store user data in localStorage after login/register
   storeUserData: (data: { token: string; user: any }) => {
+    if (!data || !data.token || !data.user) {
+      console.error("Invalid data to store:", data);
+      throw new Error("Cannot store invalid user data");
+    }
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
   }

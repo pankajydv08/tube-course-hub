@@ -41,6 +41,7 @@ export function RegisterForm() {
     setIsSubmitting(true);
     
     try {
+      console.log("Submitting registration form:", { name, email, role });
       await register(name, email, password, role);
       // Success is handled in useAuth hook (with redirect)
     } catch (err: any) {

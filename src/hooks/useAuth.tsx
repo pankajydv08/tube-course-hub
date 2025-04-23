@@ -84,6 +84,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const data = await authApi.register({ name, email, password, role });
+      console.log("Registration response:", data); // Debug log
+      
+      // Make sure we have user data and token before proceeding
+      if (!data || !data.user || !data.token) {
+        throw new Error("Invalid response from server during registration");
+      }
+      
       authApi.storeUserData(data);
       setUser(data.user);
       
@@ -96,6 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       toast.success("Registration successful");
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error("Registration failed");
       throw error;
     } finally {
