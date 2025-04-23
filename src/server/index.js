@@ -106,6 +106,8 @@ app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     
+    console.log('Register request received:', { name, email, role });
+    
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -133,6 +135,8 @@ app.post('/api/auth/register', async (req, res) => {
       { expiresIn: '30d' }
     );
     
+    console.log('User registered successfully:', { id: user._id, name, email, role });
+    
     res.status(201).json({
       token,
       user: {
@@ -144,7 +148,7 @@ app.post('/api/auth/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
@@ -484,7 +488,7 @@ app.get('/api/categories', async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Export for serverless functions
 module.exports = app;

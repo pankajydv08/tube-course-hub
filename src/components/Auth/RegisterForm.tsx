@@ -42,9 +42,13 @@ export function RegisterForm() {
     
     try {
       await register(name, email, password, role);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      // Success is handled in useAuth hook (with redirect)
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      if (err?.status === 400) {
+        setError("Email already exists. Please try another email.");
+      } else if (err instanceof Error) {
+        setError(err.message || "Registration failed");
       } else {
         setError("An error occurred during registration");
       }
@@ -105,6 +109,7 @@ export function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
+            minLength={6}
           />
         </div>
         

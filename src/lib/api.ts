@@ -12,6 +12,7 @@ export class ApiError extends Error {
   constructor(message: string, status: number) {
     super(message);
     this.status = status;
+    this.name = "ApiError";
   }
 }
 
@@ -45,22 +46,43 @@ async function apiRequest(
     config.body = JSON.stringify(data);
   }
 
+  console.log(`Making ${method} request to ${API_BASE_URL}${endpoint}`);
+  
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    const responseData = await response.json();
+    // Only try to parse JSON if there's actual content
+    const contentType = response.headers.get('content-type');
+    
+    let responseData;
+    
+    if (contentType && contentType.includes('application/json') && response.status !== 204) {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        console.error("Error parsing JSON response:", e);
+        throw new ApiError('Invalid server response format', response.status);
+      }
+    } else {
+      responseData = { message: response.statusText };
+    }
 
     if (!response.ok) {
+      console.error("API error:", responseData);
       throw new ApiError(responseData.message || "An error occurred", response.status);
     }
 
     return responseData;
   } catch (error) {
     if (error instanceof ApiError) {
+      console.error("API error:", error);
+      toast.error(error.message);
       throw error;
     } else if (error instanceof Error) {
+      console.error("Request error:", error);
       toast.error(error.message);
       throw new ApiError(error.message, 500);
     } else {
+      console.error("Unknown error:", error);
       toast.error("An unknown error occurred");
       throw new ApiError("An unknown error occurred", 500);
     }
