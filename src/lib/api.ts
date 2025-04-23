@@ -50,20 +50,30 @@ async function apiRequest(
   
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    // Only try to parse JSON if there's actual content
-    const contentType = response.headers.get('content-type');
     
+    // Handle empty responses
+    if (response.status === 204) {
+      return { success: true, message: "Operation completed successfully" };
+    }
+    
+    // Try to parse as JSON if content exists and is JSON
     let responseData;
+    const contentType = response.headers.get('content-type');
+    const hasContent = response.headers.get('content-length') !== '0';
     
-    if (contentType && contentType.includes('application/json') && response.status !== 204) {
+    if (contentType && contentType.includes('application/json') && hasContent) {
       try {
         responseData = await response.json();
       } catch (e) {
         console.error("Error parsing JSON response:", e);
         throw new ApiError('Invalid server response format', response.status);
       }
+    } else if (!response.ok) {
+      // Non-JSON error response
+      throw new ApiError(response.statusText || "An error occurred", response.status);
     } else {
-      responseData = { message: response.statusText };
+      // Non-JSON success response
+      responseData = { success: true, message: response.statusText || "Operation completed successfully" };
     }
 
     if (!response.ok) {

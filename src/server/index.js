@@ -108,6 +108,10 @@ app.post('/api/auth/register', async (req, res) => {
     
     console.log('Register request received:', { name, email, role });
     
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: 'Please provide all required fields' });
+    }
+    
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
