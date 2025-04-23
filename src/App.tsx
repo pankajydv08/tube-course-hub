@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import InstructorDashboard from "./pages/Instructor/InstructorDashboard";
 import InstructorCourseList from "./pages/Instructor/InstructorCourseList";
 import CreateCourse from "./pages/Instructor/CreateCourse";
 import EditCourse from "./pages/Instructor/EditCourse";
+import ViewCourse from "./pages/Instructor/ViewCourse";
 
 // Student Pages
 import StudentDashboard from "./pages/Student/StudentDashboard";
@@ -77,6 +77,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="instructor">
                   <EditCourse />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/instructor/courses/:id" 
+              element={
+                <ProtectedRoute requiredRole="instructor">
+                  <ViewCourse />
                 </ProtectedRoute>
               } 
             />

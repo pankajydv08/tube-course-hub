@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "@/components/Layout/DashboardLayout";
@@ -19,7 +18,7 @@ export default function BrowseCourses() {
   const [categories, setCategories] = useState<CategoryCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get("category") || "");
+  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get("category") || "all");
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
 
   // Fetch courses and categories
@@ -62,7 +61,7 @@ export default function BrowseCourses() {
     let filtered = [...courses];
     
     // Apply category filter
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all') {
       filtered = filtered.filter(course => 
         course.category.toLowerCase() === selectedCategory.toLowerCase()
       );
@@ -158,7 +157,7 @@ export default function BrowseCourses() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category._id} value={category.name}>
                         {category.name} ({category.count})

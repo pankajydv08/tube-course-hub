@@ -1,4 +1,3 @@
-
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,6 +53,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           label: "Create Course",
           icon: <Plus size={20} />,
           href: "/instructor/courses/create",
+        },
+        {
+          label: "Sign Out",
+          icon: <LogOut size={20} />,
+          onClick: logout,
+          className: "text-red-600 hover:bg-red-50 hover:text-red-700 mt-auto"
         }
       ]
     : [
@@ -71,6 +76,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           label: "My Learning",
           icon: <BookUser size={20} />,
           href: "/student/enrollments",
+        },
+        {
+          label: "Sign Out",
+          icon: <LogOut size={20} />,
+          onClick: logout,
+          className: "text-red-600 hover:bg-red-50 hover:text-red-700 mt-auto"
         }
       ];
 
@@ -143,37 +154,44 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <nav className="flex-grow p-4">
             <ul className="space-y-2">
               {navItems.map((item) => {
-                const isActive = location.pathname === item.href;
+                const isActive = item.href ? location.pathname === item.href : false;
                 return (
-                  <li key={item.href}>
-                    <Link
-                      to={item.href}
-                      className={`flex items-center py-2 px-4 rounded-md transition-colors ${
-                        isActive
-                          ? "bg-purple-100 text-purple-700"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      {item.icon}
-                      <span className="ml-3">{item.label}</span>
-                    </Link>
+                  <li key={item.href || item.label}>
+                    {item.href ? (
+                      <Link
+                        to={item.href}
+                        className={`flex items-center py-2 px-4 rounded-md transition-colors ${
+                          isActive
+                            ? "bg-purple-100 text-purple-700"
+                            : "text-gray-700 hover:bg-gray-100"
+                        } ${item.className || ""}`}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {item.icon}
+                        <span className="ml-3">{item.label}</span>
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          item.onClick?.();
+                          setSidebarOpen(false);
+                        }}
+                        className={`w-full flex items-center py-2 px-4 rounded-md transition-colors text-gray-700 hover:bg-gray-100 ${
+                          item.className || ""
+                        }`}
+                      >
+                        {item.icon}
+                        <span className="ml-3">{item.label}</span>
+                      </button>
+                    )}
                   </li>
                 );
               })}
             </ul>
           </nav>
 
-          {/* Footer */}
+          {/* Remove the footer section since logout is now in nav items */}
           <div className="p-4 border-t mt-auto">
-            <Button
-              variant="ghost"
-              className="w-full flex items-center justify-start text-gray-700 hover:bg-gray-100"
-              onClick={logout}
-            >
-              <LogOut size={20} className="mr-3" />
-              Sign Out
-            </Button>
           </div>
         </div>
       </aside>
