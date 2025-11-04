@@ -1,20 +1,149 @@
-# Welcome to your Lovable project
+# Tube Course Hub
 
-## Project info
+A full-stack web application for managing and accessing online courses with YouTube video integration.
 
-**URL**: https://lovable.dev/projects/e1126f9f-4223-401f-9d6a-a084523e1590
+## Tech Stack
+
+### Frontend
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn-ui (UI Components)
+- React Router DOM
+- React Query
+- React Hook Form
+- Zod (Form Validation)
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Database)
+- Mongoose (ODM)
+- JWT (Authentication)
+- bcryptjs (Password Hashing)
+- CORS
+
+## Database Models
+
+### User
+```typescript
+{
+  name: string;
+  email: string;
+  password: string;
+  role: 'student' | 'instructor';
+  createdAt: Date;
+}
+```
+
+### Course
+```typescript
+{
+  title: string;
+  description: string;
+  category: string;
+  instructor: ObjectId (ref: User);
+  videos: [{
+    title: string;
+    youtubeId: string;
+  }];
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### Enrollment
+```typescript
+{
+  student: ObjectId (ref: User);
+  course: ObjectId (ref: Course);
+  progress: number[];
+  enrolledAt: Date;
+}
+```
+
+## API Routes
+
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/user` - Get current user info
+
+### Courses
+- `POST /api/courses` - Create a new course (Instructor only)
+- `GET /api/courses/instructor` - Get instructor's courses
+- `GET /api/courses` - Get all courses
+- `GET /api/courses/:id` - Get course details
+- `PUT /api/courses/:id` - Update course (Instructor only)
+- `DELETE /api/courses/:id` - Delete course (Instructor only)
+
+### Enrollments
+- `POST /api/enrollments` - Enroll in a course
+- `GET /api/enrollments/student` - Get student's enrollments
+- `PUT /api/enrollments/:id/progress` - Update course progress
+
+## Working Mechanism
+
+1. **Authentication Flow**
+   - Users register/login with email and password
+   - JWT token is generated and stored
+   - Protected routes require valid JWT token
+
+2. **Course Management**
+   - Instructors can create courses with YouTube video links
+   - Courses are categorized and searchable
+   - Students can browse and enroll in courses
+
+3. **Learning Progress**
+   - Students can track their progress through course videos
+   - Progress is saved per video
+   - Instructors can view enrollment statistics
+
+## Setup and Installation
+
+1. Clone the repository:
+```sh
+git clone <repository-url>
+cd tube-course-hub
+```
+
+2. Install dependencies:
+```sh
+npm install
+```
+
+3. Set up environment variables:
+Create a `.env` file with:
+```
+MONGODB_URI=mongodb://localhost:27017/ecourse
+JWT_SECRET=your_jwt_secret
+```
+
+4. Start the development server:
+```sh
+npm run dev:all
+```
+
+## Development
+
+- Frontend runs on `http://localhost:8080`
+- Backend runs on `http://localhost:3000`
+
+## Features
+
+- User authentication (Student/Instructor roles)
+- Course creation and management
+- YouTube video integration
+- Progress tracking
+- Responsive design
+- Modern UI with shadcn-ui components
+- Form validation with Zod
+- Type safety with TypeScript
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/e1126f9f-4223-401f-9d6a-a084523e1590) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
@@ -49,25 +178,3 @@ npm run dev
 - Select the "Codespaces" tab.
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e1126f9f-4223-401f-9d6a-a084523e1590) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
